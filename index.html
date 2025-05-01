@@ -1,629 +1,465 @@
-<!--
-   Created By Kai
-   Contact https://wa.me/6282126446272
-   Repost By Kaizo
-   Contact https://wa.me/6285167345215
- 
-  CHANEL KAI
-   > https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R
-  CHANEL KAIZO
-   > https://whatsapp.com/channel/0029VazCKyL4Y9lq0eKtsl2c
--->
-
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QRIS Generator Pro</title>
-  <!-- Font Awesome untuk ikon -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary: #4361ee;
-      --primary-light: #4895ef;
-      --secondary: #3f37c9;
-      --success: #4caf50;
-      --error: #f44336;
-      --dark: #2b2d42;
-      --light: #f8f9fa;
-      --text-primary: #2b2d42;
-      --text-secondary: #6c757d;
-      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-      --radius-sm: 6px;
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --transition: all 0.3s ease;
-      --spacing-xs: 4px;
-      --spacing-sm: 8px;
-      --spacing-md: 16px;
-      --spacing-lg: 24px;
-      --spacing-xl: 32px;
-    }
-
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: var(--light);
-      color: var(--text-primary);
-      line-height: 1.6;
-    }
-
-
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 var(--spacing-md);
-    }
-
-
-    .header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: var(--spacing-xl) 0;
-      position: relative;
-    }
-
-    .header-content {
-      text-align: center;
-      padding: var(--spacing-lg) 0;
-      position: relative;
-      z-index: 2;
-    }
-
-    .header-title {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: var(--spacing-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--spacing-sm);
-    }
-
-    .header-subtitle {
-      font-size: 1rem;
-      opacity: 0.9;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-
-    .wave {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      overflow: hidden;
-      line-height: 0;
-    }
-
-    .wave svg {
-      position: relative;
-      display: block;
-      width: calc(100% + 1.3px);
-      height: 40px;
-    }
-
-    .wave .shape-fill {
-      fill: var(--light);
-    }
-
-
-    .main {
-      padding: var(--spacing-xl) 0;
-    }
-
-    .card {
-      background: white;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      max-width: 600px;
-      margin: 0 auto var(--spacing-xl);
-    }
-
-    .card-header {
-      padding: var(--spacing-lg);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .card-title {
-      font-size: 1.3rem;
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      color: var(--dark);
-    }
-
-    .card-title i {
-      color: var(--primary);
-    }
-
-    .card-body {
-      padding: var(--spacing-lg);
-    }
-
-
-    .form-group {
-      margin-bottom: var(--spacing-lg);
-      position: relative;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: var(--spacing-sm);
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--text-primary);
-    }
-
-    .form-icon {
-      position: absolute;
-      left: var(--spacing-md);
-      top: 43px;
-      color: var(--text-secondary);
-    }
-
-    .form-control {
-      width: 100%;
-      padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 40px;
-      border: 1px solid #e0e0e0;
-      border-radius: var(--radius-md);
-      font-size: 1rem;
-      transition: var(--transition);
-      background-color: #fbfbfb;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-      background-color: white;
-      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-    }
-
-    textarea.form-control {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-
-    .checkbox {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      margin-bottom: var(--spacing-lg);
-      user-select: none;
-    }
-
-    .checkbox-input {
-      position: absolute;
-      opacity: 0;
-      height: 0;
-      width: 0;
-    }
-
-    .checkbox-custom {
-      height: 22px;
-      width: 22px;
-      background-color: #f3f3f3;
-      border: 1px solid #e0e0e0;
-      border-radius: var(--radius-sm);
-      margin-right: var(--spacing-md);
-      position: relative;
-      transition: var(--transition);
-    }
-
-    .checkbox-input:checked ~ .checkbox-custom {
-      background-color: var(--primary);
-      border-color: var(--primary);
-    }
-
-    .checkbox-custom:after {
-      content: '';
-      position: absolute;
-      display: none;
-      left: 7px;
-      top: 3px;
-      width: 6px;
-      height: 11px;
-      border: solid white;
-      border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
-    }
-
-    .checkbox-input:checked ~ .checkbox-custom:after {
-      display: block;
-    }
-
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md) var(--spacing-lg);
-      border: none;
-      border-radius: var(--radius-md);
-      background-color: var(--primary);
-      color: white;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: var(--transition);
-      text-decoration: none;
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn:hover {
-      background-color: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      width: 100%;
-    }
-
-    .btn-success {
-      background-color: var(--success);
-    }
-
-    .btn-success:hover {
-      background-color: #43a047;
-    }
-
-    .btn:disabled {
-      background: #b0b0b0;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn .spinner {
-      animation: spin 0.8s linear infinite;
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      border-top-color: white;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      margin-right: var(--spacing-sm);
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-
-    .alert {
-      padding: var(--spacing-md);
-      border-radius: var(--radius-md);
-      margin-top: var(--spacing-lg);
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .alert-error {
-      background-color: rgba(244, 67, 54, 0.1);
-      color: var(--error);
-      border-left: 4px solid var(--error);
-    }
-
-
-    .result {
-      text-align: center;
-      padding: var(--spacing-lg) 0;
-    }
-
-    .result-title {
-      font-size: 1.3rem;
-      margin-bottom: var(--spacing-lg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--spacing-sm);
-    }
-
-    .result-title i {
-      color: var(--primary);
-    }
-
-    .qris-container {
-      background-color: white;
-      border-radius: var(--radius-md);
-      padding: var(--spacing-lg);
-      box-shadow: var(--shadow-md);
-      display: inline-block;
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .qris-image {
-      max-width: 100%;
-      height: auto;
-    }
-
-
-    .tooltip {
-      position: relative;
-      display: inline-block;
-      cursor: pointer;
-    }
-
-    .tooltip-text {
-      visibility: hidden;
-      background-color: var(--dark);
-      color: white;
-      text-align: center;
-      border-radius: var(--radius-sm);
-      padding: var(--spacing-sm) var(--spacing-md);
-      position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      font-size: 0.8rem;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .tooltip-text::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: var(--dark) transparent transparent transparent;
-    }
-
-    .tooltip:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
-
-   
-    .footer {
-      background-color: var(--dark);
-      color: white;
-      padding: var(--spacing-lg);
-      text-align: center;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-      20%, 40%, 60%, 80% { transform: translateX(5px); }
-    }
-
-    .shake {
-      animation: shake 0.5s;
-    }
-
-   
-    @media (max-width: 768px) {
-      .header-title {
-        font-size: 1.8rem;
-      }
-      
-      .card {
-        margin-left: var(--spacing-md);
-        margin-right: var(--spacing-md);
-      }
-    }
-
-    @media (max-width: 576px) {
-      .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-sm);
-      }
-      
-      .tooltip {
-        align-self: flex-end;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthexa Chat</title>
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --accent-color: #00cec9;
+            --gradient-start: #a29bfe;
+            --gradient-end: #81ecec;
+            --dark-bg: #1e272e;
+            --dark-card: #2d3436;
+            --light-bg: #f5f6fa;
+            --light-card: #ffffff;
+            --dark-text: #dfe6e9;
+            --light-text: #2d3436;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            transition: all 0.3s ease;
+            height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dark-theme {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+        
+        .light-theme {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+        
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        /* Header styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .brand {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .theme-toggle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom right, var(--gradient-start), var(--gradient-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        /* Welcome section */
+        .welcome {
+            margin: 30px 0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .welcome h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        
+        .welcome h1 .highlight-1 {
+            color: var(--primary-color);
+        }
+        
+        .welcome h1 .highlight-2 {
+            color: var(--accent-color);
+        }
+        
+        .welcome p {
+            font-size: 20px;
+            opacity: 0.8;
+        }
+        
+        /* Chat container */
+
+        /* Message styles */
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            margin-left: auto;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .dark-theme .bot-message {
+            background-color: #353b48;
+            color: var(--dark-text);
+        }
+        
+        .light-theme .bot-message {
+            background-color: #f0f0f0;
+            color: var(--light-text);
+        }
+        
+        /* Typing indicator */
+        .typing-indicator {
+            display: none;
+            margin-right: auto;
+            background-color: rgba(108, 92, 231, 0.1);
+            padding: 8px 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            margin-right: 5px;
+            animation: typing 1s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+            margin-right: 0;
+        }
+        
+        @keyframes typing {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        
+        /* Input area */
+        .chat-input {
+            margin-top: auto;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            width: 100%;
+            border: none;
+            padding: 20px 60px 20px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-theme .input-field {
+            background-color: var(--dark-card);
+            color: var(--dark-text);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .light-theme .input-field {
+            background-color: var(--light-card);
+            color: var(--light-text);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .input-field:focus {
+            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.3);
+        }
+        
+        .send-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom right, var(--primary-color), var(--accent-color));
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.6;
+            padding: 10px 0;
+        }
+        
+        /* Text formatting */
+        .message p {
+            margin-bottom: 5px;
+        }
+        
+        .message p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .message strong {
+            font-weight: bold;
+        }
+        
+        .message em {
+            font-style: italic;
+        }
+        
+        .message u {
+            text-decoration: underline;
+        }
+        
+        .message code {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
 </head>
-<body>
-  <header class="header">
+<body class="dark-theme">
     <div class="container">
-      <div class="header-content">
-        <h1 class="header-title">
-          <i class="fas fa-qrcode"></i>
-          QRIS Generator Pro
-        </h1>
-        <p class="header-subtitle">
-          Buat kode QRIS dinamis dengan mudah dan cepat untuk berbagai keperluan pembayaran
-        </p>
-      </div>
-    </div>
-    <div class="wave">
-      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-        <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
-      </svg>
-    </div>
-  </header>
-
-  
-  <main class="main">
-    <div class="container">
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">
-            <i class="fas fa-edit"></i>
-            Buat QRIS
-          </h2>
-          <div class="tooltip">
-            <i class="fas fa-info-circle" style="color: var(--primary);"></i>
-            <span class="tooltip-text">Masukkan kode QRIS dan nominal untuk membuat QRIS dinamis.</span>
-          </div>
+        <div class="header">
+            <div class="brand">
+                <span>✨</span>Synthexa
+            </div>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span>🌙</span>
+            </div>
         </div>
         
-        <div class="card-body">
-          <form id="qrisForm">
-            <div class="form-group">
-              <label for="qris" class="form-label">Kode QRIS</label>
-              <i class="fas fa-code form-icon"></i>
-              <textarea 
-                id="qris"
-                class="form-control"
-                placeholder="Masukkan kode QRIS di sini..."
-                required
-              ></textarea>
-            </div>
-            
-            <div class="form-group">
-              <label for="amount" class="form-label">Nominal</label>
-              <i class="fas fa-wallet form-icon"></i>
-              <input
-                type="text"
-                id="amount"
-                class="form-control"
-                placeholder="Contoh: 10000"
-                required
-              />
-            </div>
-            
-            <label class="checkbox">
-              <input type="checkbox" id="gradient" class="checkbox-input">
-              <span class="checkbox-custom"></span>
-              <span>Aktifkan Gradient</span>
-            </label>
-            
-            <button type="submit" id="generateBtn" class="btn btn-primary">
-              <i class="fas fa-wand-magic-sparkles"></i>
-              Generate QRIS
-            </button>
-          </form>
-          
-          <div id="errorMessage" class="alert alert-error" style="display: none;">
-            <i class="fas fa-exclamation-circle"></i>
-            <span id="errorText"></span>
-          </div>
+        <div class="welcome" id="welcomeSection">
+            <h1><span class="highlight-1">Welcome</span> <span class="highlight-2">Back!</span></h1>
+            <p>How can I assist you today?</p>
         </div>
-      </div>
-      
-      <div id="resultContainer" class="result" style="display: none;">
-        <h2 class="result-title">
-          <i class="fas fa-check-circle"></i>
-          QRIS yang Dihasilkan
-        </h2>
-        <div class="qris-container">
-          <img id="qrisImage" class="qris-image" alt="QRIS">
+        
+        <div class="chat-container" id="chatContainer">
+            <!-- Messages will appear here -->
+            <div class="typing-indicator" id="typingIndicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
-        <a id="downloadBtn" class="btn btn-success" href="#" download="qris.png">
-          <i class="fas fa-download"></i>
-          Download QRIS
-        </a>
-      </div>
+        
+        <div class="chat-input">
+            <input type="text" class="input-field" id="messageInput" placeholder="Type your message here...">
+            <button class="send-button" id="sendButton">➤</button>
+        </div>
+        
+        <div class="footer">
+            Information provided is for guidance only. Please verify important details with our team.
+        </div>
     </div>
-  </main>
-
- 
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2025 QRIS Generator Pro. Semua hak dilindungi.</p>
-    </div>
-  </footer>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const qrisForm = document.getElementById('qrisForm');
-      const qrisInput = document.getElementById('qris');
-      const amountInput = document.getElementById('amount');
-      const gradientCheckbox = document.getElementById('gradient');
-      const generateBtn = document.getElementById('generateBtn');
-      const errorMessage = document.getElementById('errorMessage');
-      const errorText = document.getElementById('errorText');
-      const resultContainer = document.getElementById('resultContainer');
-      const qrisImage = document.getElementById('qrisImage');
-      const downloadBtn = document.getElementById('downloadBtn');
-      function showError(message) {
-        errorText.textContent = message;
-        errorMessage.style.display = 'flex';
-      }
-      function hideError() {
-        errorText.textContent = '';
-        errorMessage.style.display = 'none';
-      } 
-      //chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//     
-      function applyShakeAnimation(element) {
-        element.classList.remove('shake');
-        void element.offsetWidth; // Trigger reflow
-        element.classList.add('shake');
-      }     
-//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
-      function setLoading(isLoading) {
-        if (isLoading) {
-          generateBtn.disabled = true;
-          generateBtn.innerHTML = '<span class="spinner"></span>Sedang Memproses...';
-        } else {
-          generateBtn.disabled = false;
-          generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i>Generate QRIS';
+    
+    <script>
+        // Theme toggling
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.querySelector('.theme-toggle span');
+            
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                themeIcon.textContent = '☀️';
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                themeIcon.textContent = '🌙';
+            }
         }
-      }
-//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
-      qrisForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const qrisData = qrisInput.value.trim();
-        const amount = amountInput.value.trim();
-        if (!qrisData) {
-          showError('Kode QRIS tidak boleh kosong');
-          applyShakeAnimation(qrisInput);
-          return;
+        
+        // Format message text
+        function formatMessage(text) {
+            // Bold: *text* or **text**
+            text = text.replace(/\*\*(.*?)\*\*|\*(.*?)\*/g, (match, p1, p2) => {
+                const content = p1 || p2;
+                return `<strong>${content}</strong>`;
+            });
+            
+            // Italic: _text_ or //text//
+            text = text.replace(/_(.*?)_|\/\/(.*?)\/\//g, (match, p1, p2) => {
+                const content = p1 || p2;
+                return `<em>${content}</em>`;
+            });
+            
+            // Underline: __text__
+            text = text.replace(/__(.*?)__/g, '<u>$1</u>');
+            
+            // Code: `text`
+            text = text.replace(/`(.*?)`/g, '<code>$1</code>');
+            
+            // Line breaks
+            text = text.replace(/\n/g, '<br>');
+            
+            return text;
         }
-//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
-        if (!amount || isNaN(Number(amount))) {
-          showError('Nominal harus berupa angka dan tidak boleh kosong');
-          applyShakeAnimation(amountInput);
-          return;
+        
+        // Add message to chat
+        function addMessage(text, isUser = false) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'message user-message' : 'message bot-message';
+            
+            // Format the message if it contains special symbols
+            const formattedText = formatMessage(text);
+            messageDiv.innerHTML = formattedText;
+            
+            // Insert before typing indicator
+            const typingIndicator = document.getElementById('typingIndicator');
+            chatContainer.insertBefore(messageDiv, typingIndicator);
+            
+            // Scroll to the bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-        hideError();
-        resultContainer.style.display = 'none';
-        setLoading(true);
-        try {
-          const apiUrl = `https://api.kenshiro.cfd/api/payment/createqris?q=${encodeURIComponent(qrisData)}&amount=${amount}&gradient=${gradientCheckbox.checked}`;
-          qrisImage.src = apiUrl;        
-          downloadBtn.href = apiUrl;
-          qrisImage.onload = function() {
-       //chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
-            resultContainer.style.display = 'block';
-            setLoading(false);
+        
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            typingIndicator.style.display = 'block';
+            
+            // Scroll to see the typing indicator
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            typingIndicator.style.display = 'none';
+        }
+        function hideWelcomeMessage() {
+            const welcomeSection = document.getElementById('welcomeSection');
+            welcomeSection.style.opacity = '0';
             setTimeout(() => {
-              resultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                welcomeSection.style.display = 'none';
             }, 300);
-          };
-          qrisImage.onerror = function() {
-            showError('Gagal memuat gambar QRIS. Periksa kembali input Anda.');
-            setLoading(false);
-          };
-        } catch (err) {
-          showError(`Gagal membuat QRIS: ${err.message}`);
-          setLoading(false);
         }
-      });
-    });
-  </script>
+        async function getAIResponse(message) {
+            try {
+                showTypingIndicator();
+                const content = message;
+                const user = "";
+                const prompt = `Nama kamu Synthexa. Jawab dengan nada lembut dan ceria kadang menggunakan emote kamu di kembangkan oleh clan kazami dan owner kamu ialah kai "${content}"`;
+                
+                try {
+                   
+                    const response = await scrapeLuminai(content, user, prompt);
+                    hideTypingIndicator();
+                    addMessage(response, false);
+                } catch (error) {
+                    console.error("API Error:", error);
+                    hideTypingIndicator();
+                    addMessage("Maaf, ada masalah dengan koneksi. Bisakah kamu mencoba lagi nanti?", false);
+                }
+                
+            } catch (error) {
+                console.error('Error getting AI response:', error);
+                hideTypingIndicator();
+                addMessage("Maaf, sepertinya ada masalah dengan koneksi. Bisakah kamu mencoba lagi nanti?", false);
+            }
+        }
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                if (document.getElementById('welcomeSection').style.display !== 'none') {
+                    hideWelcomeMessage();
+                }
+                addMessage(message, true)
+                messageInput.value = '';
+                getAIResponse(message);
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+        
+        document.getElementById('messageInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // thanks to putu
+        async function scrapeLuminai(content, user, prompt) {
+            const url = 'https://luminai.my.id';
+            const requestData = {
+                content: content,
+                user: user,
+                prompt: prompt
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const data = await response.json();
+                
+                if (data && data.result) {
+                    return data.result;
+                } else {
+                    throw new Error('Respon tidak valid dari luminai.my.id');
+                }
+            } catch (error) {
+                console.error('Error scraping luminai:', error.message);
+                throw error;
+            }
+        }
+    </script>
 </body>
 </html>
