@@ -1,873 +1,371 @@
-<!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monopoli Keliling Dunia</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f8ff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-        }
-        
-        #game-container {
-            display: flex;
-            width: 95%;
-            max-width: 1200px;
-            margin-top: 20px;
-        }
-        
-        #board {
-            width: 70%;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            position: relative;
-            aspect-ratio: 1/1;
-        }
-        
-        #sidebar {
-            width: 30%;
-            padding: 15px;
-            background-color: #e6f2ff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-left: 15px;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        #money-display {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        }
-        
-        .property {
-            position: absolute;
-            width: 10%;
-            height: 10%;
-            border: 1px solid #ccc;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .property:hover {
-            transform: scale(1.1);
-            z-index: 10;
-        }
-        
-        .player {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            position: absolute;
-            transition: all 0.5s;
-            z-index: 5;
-        }
-        
-        #dice-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        
-        .dice {
-            width: 50px;
-            height: 50px;
-            background-color: white;
-            border-radius: 10px;
-            margin: 0 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-        
-        #controls {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        button {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #45a049;
-        }
-        
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        
-        #player-info {
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-        
-        .player-card {
-            background-color: white;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        #chat {
-            margin-top: 20px;
-            border-top: 1px solid #ccc;
-            padding-top: 10px;
-        }
-        
-        #chat-messages {
-            height: 100px;
-            overflow-y: auto;
-            background-color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        
-        #chat-input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .close {
-            float: right;
-            cursor: pointer;
-            font-size: 24px;
-        }
-        
-        #property-details {
-            text-align: center;
-        }
-        
-        #property-image {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        
-        .color-bar {
-            height: 10px;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Monopoli Keliling Dunia</h1>
-    
-    <div id="game-container">
-        <div id="board">
-            <div id="money-display">Uang: $1,500</div>
-            <!-- Papan permainan akan diisi oleh JavaScript -->
-        </div>
-        
-        <div id="sidebar">
-            <div id="dice-container">
-                <div class="dice" id="dice1">?</div>
-                <div class="dice" id="dice2">?</div>
-            </div>
-            
-            <div id="controls">
-                <button id="roll-dice">Lempar Dadu</button>
-                <button id="end-turn" disabled>Akhiri Giliran</button>
-            </div>
-            
-            <div id="player-info">
-                <!-- Info pemain akan diisi oleh JavaScript -->
-            </div>
-            
-            <div id="chat">
-                <h3>Chat</h3>
-                <div id="chat-messages"></div>
-                <input type="text" id="chat-input" placeholder="Ketik pesan...">
-            </div>
-        </div>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Donwloader Spotify
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      overflow-x: hidden;
+    }
+    .orbitron {
+      font-family: 'Orbitron', monospace;
+    }
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .header-glow {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: headerGlow 4s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+    @keyframes headerGlow {
+      0% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+      100% { transform: translateX(-50%) scale(1.2); opacity: 0.6; }
+    }
+    .conic-bg {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.1), transparent, rgba(217, 70, 239, 0.1), transparent);
+      animation: rotate 8s linear infinite;
+      z-index: -1;
+      border-radius: 2xl;
+    }
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+ </head>
+ <body class="bg-[#0a0a0f] text-slate-200 min-h-screen relative">
+  <div class="fixed inset-0 z-0 opacity-60">
+   <div class="star" style="top:10%; left:20%; width:2px; height:2px; animation-delay:0s;">
+   </div>
+   <div class="star" style="top:20%; left:80%; width:1px; height:1px; animation-delay:1s;">
+   </div>
+   <div class="star" style="top:60%; left:10%; width:1px; height:1px; animation-delay:2s;">
+   </div>
+   <div class="star" style="top:80%; left:70%; width:2px; height:2px; animation-delay:0.5s;">
+   </div>
+   <div class="star" style="top:30%; left:50%; width:1px; height:1px; animation-delay:1.5s;">
+   </div>
+   <div class="star" style="top:70%; left:30%; width:1px; height:1px; animation-delay:2.5s;">
+   </div>
+  </div>
+  <header class="relative text-center py-16 px-4">
+   <div class="header-glow">
+   </div>
+   <h1 class="orbitron text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-indigo-500 via-pink-600 to-cyan-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(99,102,241,0.5)] inline-flex items-center justify-center gap-3">
+    <i class="fab fa-spotify">
+    </i>
+    Donwloader SPOTIFY
+   </h1>
+   <p class="mt-4 text-lg sm:text-xl text-slate-400 drop-shadow-md">
+    ✨ Unduh lagu favoritmu dengan cepat ✨
+   </p>
+  </header>
+  <main class="max-w-xl mx-auto px-5 relative z-10">
+   <section class="relative bg-[rgba(15,23,42,0.8)] backdrop-blur-[20px] rounded-3xl border border-indigo-600/20 shadow-[0_25px_50px_rgba(0,0,0,0.5),0_0_0_1px_rgba(99,102,241,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] p-10 mb-12 overflow-hidden">
+    <div class="conic-bg">
     </div>
-    
-    <div id="property-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div id="property-details">
-                <img id="property-image" src="" alt="Gambar Properti">
-                <h2 id="property-name"></h2>
-                <div class="color-bar" id="property-color"></div>
-                <p id="property-price"></p>
-                <p id="property-rent"></p>
-                <p id="property-owner"></p>
-                <div id="property-actions">
-                    <button id="buy-property">Beli Properti</button>
-                    <button id="pay-rent">Bayar Sewa</button>
-                    <button id="close-modal">Tutup</button>
-                </div>
-            </div>
-        </div>
+    <form class="space-y-8 relative z-10" id="downloadForm">
+     <div>
+      <label class="block mb-3 font-semibold text-slate-200 text-lg flex items-center gap-2" for="spotifyUrl">
+       <i class="fas fa-link">
+       </i>
+       URL Lagu Spotify
+      </label>
+      <input autocomplete="off" class="w-full rounded-xl bg-slate-900/80 border-2 border-indigo-600/30 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 text-slate-200 text-lg px-6 py-4 placeholder:text-slate-500 outline-none backdrop-blur-md transition" id="spotifyUrl" placeholder="https://open.spotify.com/track/..." required="" type="url"/>
+     </div>
+     <button class="w-full flex justify-center items-center gap-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-extrabold uppercase tracking-wider rounded-xl py-5 text-xl shadow-lg hover:shadow-indigo-500/50 hover:-translate-y-1 transition disabled:opacity-60 disabled:cursor-not-allowed" id="downloadBtn" type="submit">
+      <i class="fas fa-rocket"></i>
+     mulai
+     </button>
+    </form>
+    <div class="hidden mt-8 p-4 bg-red-700/20 border border-red-600 rounded-lg text-red-300 font-semibold" id="errorMessage">
     </div>
-    
-    <div id="game-setup" class="modal" style="display: flex;">
-        <div class="modal-content">
-            <h2>Setup Permainan</h2>
-            <div>
-                <h3>Jumlah Pemain:</h3>
-                <select id="player-count">
-                    <option value="2">2 Pemain</option>
-                    <option value="3">3 Pemain</option>
-                    <option value="4">4 Pemain</option>
-                </select>
-                
-                <h3>Mode Permainan:</h3>
-                <select id="game-mode">
-                    <option value="local">Lokal (Multiplayer)</option>
-                    <option value="ai">Lawan Robot</option>
-                </select>
-                
-                <div id="player-names">
-                    <!-- Nama pemain akan diisi oleh JavaScript -->
-                </div>
-            </div>
-            <button id="start-game">Mulai Permainan</button>
-        </div>
+    <div class="hidden mt-10 bg-slate-900/60 backdrop-blur-md rounded-2xl border border-pink-600/30 shadow-lg p-8" id="trackInfo">
+     <div class="flex flex-col sm:flex-row items-center sm:items-start gap-8">
+      <img alt="Gambar album placeholder" class="w-28 h-28 rounded-xl object-cover shadow-lg border-2 border-cyan-400/40 flex-shrink-0" height="120" id="albumArt" src="https://storage.googleapis.com/a1aa/image/1041be73-ac93-4c80-7c02-33705d924642.jpg" width="120"/>
+      <div class="flex-1 text-center sm:text-left">
+       <h3 class="text-2xl font-extrabold text-slate-100 mb-2 leading-tight" id="trackTitle">
+       </h3>
+       <p class="text-cyan-400 font-semibold text-lg mb-1" id="trackArtist">
+       </p>
+       <p class="text-slate-400 mb-1" id="trackAlbum">
+       </p>
+       <p class="text-slate-400" id="trackDuration">
+       </p>
+      </div>
+     </div>
+     <div class="mt-8 flex flex-wrap justify-center sm:justify-start gap-5">
+      <a class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl px-6 py-3 shadow-md transition transform hover:-translate-y-1" href="#" id="spotifyLink" rel="noopener noreferrer" target="_blank">
+       <i class="fab fa-spotify text-2xl">
+       </i>
+       Buka Spotify
+      </a>
+      <button class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-600 to-yellow-500 hover:from-pink-700 hover:to-yellow-600 text-white font-semibold rounded-xl px-6 py-3 shadow-md transition transform disabled:opacity-60 disabled:cursor-not-allowed hover:-translate-y-1" disabled="" id="downloadMp3Btn">
+       <i class="fas fa-download text-lg">
+       </i>
+       Unduh MP3
+      </button>
+     </div>
     </div>
-    
-    <script>
-        // Data properti bertema dunia
-        const properties = [
-            { id: 1, name: "Bali, Indonesia", price: 60, rent: 2, color: "#FF5733", group: "asia", image: "https://images.unsplash.com/photo-1518544866330-95a5acf73f14" },
-            { id: 2, name: "Tokyo, Jepang", price: 80, rent: 4, color: "#FF5733", group: "asia", image: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26" },
-            { id: 3, name: "Paris, Prancis", price: 100, rent: 6, color: "#33FF57", group: "europe", image: "https://images.unsplash.com/photo-1431274172761-fca41d930114" },
-            { id: 4, name: "Roma, Italia", price: 120, rent: 8, color: "#33FF57", group: "europe", image: "https://images.unsplash.com/photo-1529260830199-42c24126f198" },
-            { id: 5, name: "New York, USA", price: 140, rent: 10, color: "#3357FF", group: "america", image: "https://images.unsplash.com/photo-1485871981521-5b1fd3805eee" },
-            { id: 6, name: "Rio de Janeiro, Brazil", price: 160, rent: 12, color: "#3357FF", group: "america", image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325" },
-            { id: 7, name: "Kairo, Mesir", price: 180, rent: 14, color: "#FF33A8", group: "africa", image: "https://images.unsplash.com/photo-1583417319070-4a69db38a482" },
-            { id: 8, name: "Cape Town, Afrika Selatan", price: 200, rent: 16, color: "#FF33A8", group: "africa", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4" },
-            { id: 9, name: "Sydney, Australia", price: 220, rent: 18, color: "#A833FF", group: "oceania", image: "https://images.unsplash.com/photo-1523428096881-5bd79d043006" },
-            { id: 10, name: "Auckland, Selandia Baru", price: 240, rent: 20, color: "#A833FF", group: "oceania", image: "https://images.unsplash.com/photo-1507699622108-4be3abd695ad" },
-            { id: 11, name: "Dubai, UAE", price: 260, rent: 22, color: "#33FFF5", group: "middleeast", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c" },
-            { id: 12, name: "Moskwa, Rusia", price: 280, rent: 24, color: "#33FFF5", group: "europe", image: "https://images.unsplash.com/photo-1513326738677-b964603b136d" }
-        ];
+   </section>
+   <section class="text-center mb-16">
+    <button class="inline-flex items-center gap-3 bg-yellow-500 hover:bg-yellow-600 text-white font-bold uppercase tracking-wider rounded-2xl px-10 py-4 shadow-lg transition transform hover:-translate-y-1" id="donateBtn">
+     <i class="fas fa-heart">
+     </i>
+     support dev
+    </button>
+   </section>
+  </main>
+  <div class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-md hidden items-center justify-center z-50 px-4" id="donationModal">
+   <div class="bg-slate-900/95 backdrop-blur-lg rounded-3xl border border-indigo-600/40 max-w-md w-full p-10 relative shadow-2xl text-center">
+    <button aria-label="Tutup modal donasi" class="absolute top-5 right-6 text-slate-400 hover:text-slate-100 text-2xl transition" id="closeModal">
+     <i class="fas fa-times">
+     </i>
+    </button>
+    <h3 class="text-2xl font-extrabold text-slate-100 mb-4 flex items-center justify-center gap-3">
+     <i class="fas fa-coffee text-yellow-400">
+     </i>
+     Dukung Proyek Ini
+    </h3>
+    <p class="text-slate-400 mb-8">
+     Bantu menjaga layanan ini tetap berjalan dan dukung pengembangan lebih lanjut terimakasih kepada api agatz
+    </p>
+    <div class="flex flex-col gap-4">
+     <a class="flex items-center gap-4 border border-indigo-600/40 rounded-xl bg-slate-800/50 hover:bg-slate-800/80 transition px-6 py-4 font-semibold text-slate-200 cursor-pointer" href="#" onclick="alert('Pembayaran QRIS segera hadir!'); return false;">
+      <i class="fas fa-qrcode text-cyan-400 text-xl">
+      </i>
+      Pembayaran QRIS
+     </a>
+     <a class="flex items-center gap-4 border border-indigo-600/40 rounded-xl bg-slate-800/50 hover:bg-slate-800/80 transition px-6 py-4 font-semibold text-slate-200" href="https://saweria.co/donate" rel="noopener noreferrer" target="_blank">
+      <i class="fas fa-gift text-yellow-400 text-xl">
+      </i>
+      Saweria
+     </a>
+    </div>
+   </div>
+  </div>
+  <footer class="bg-slate-900/80 backdrop-blur-md border-t border-indigo-600/20 py-16 px-6 text-center mt-20 relative z-10">
+   <div class="max-w-5xl mx-auto">
+    <h2 class="orbitron text-3xl font-extrabold bg-gradient-to-r from-indigo-500 via-pink-600 to-indigo-400 bg-clip-text text-transparent mb-6 inline-flex items-center justify-center gap-3">
+     <i class="fas fa-code">
+     </i>
+     Donwloader spotify
+    </h2>
+    <p class="text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed">
+     Unduh lagu Spotify favoritmu dan dukung pengembang agar layanan ini tetap hidup dan berkembang!
+    </p>
+    <div class="flex justify-center gap-6 mb-10 flex-wrap">
+     <a aria-label="GitHub" class="w-12 h-12 rounded-full border-2 border-indigo-600/30 bg-indigo-900/10 text-indigo-500 flex items-center justify-center text-xl hover:bg-indigo-700 hover:text-white transition" href="#" title="GitHub">
+      <i class="fab fa-github">
+      </i>
+     </a>
+     <a aria-label="Twitter" class="w-12 h-12 rounded-full border-2 border-indigo-600/30 bg-indigo-900/10 text-indigo-500 flex items-center justify-center text-xl hover:bg-indigo-700 hover:text-white transition" href="#" title="Twitter">
+      <i class="fab fa-twitter">
+      </i>
+     </a>
+     <a aria-label="Instagram" class="w-12 h-12 rounded-full border-2 border-indigo-600/30 bg-indigo-900/10 text-indigo-500 flex items-center justify-center text-xl hover:bg-indigo-700 hover:text-white transition" href="#" title="Instagram">
+      <i class="fab fa-instagram">
+      </i>
+     </a>
+     <a aria-label="Discord" class="w-12 h-12 rounded-full border-2 border-indigo-600/30 bg-indigo-900/10 text-indigo-500 flex items-center justify-center text-xl hover:bg-indigo-700 hover:text-white transition" href="#" title="Discord">
+      <i class="fab fa-discord">
+      </i>
+     </a>
+     <a aria-label="Telegram" class="w-12 h-12 rounded-full border-2 border-indigo-600/30 bg-indigo-900/10 text-indigo-500 flex items-center justify-center text-xl hover:bg-indigo-700 hover:text-white transition" href="#" title="Telegram">
+      <i class="fab fa-telegram">
+      </i>
+     </a>
+    </div>
+    <div class="text-slate-500 text-sm border-t border-indigo-600/10 pt-6">
+     <p>
+      © 2024 Donwloader Spotify | Dibuat dengan
+      <i class="fas fa-heart text-red-500">
+      </i>
+      menggunakan Agat API
+     </p>
+     <p class="mt-2 opacity-70">
+      ✨ Didukung oleh kaizel ✨
+     </p>
+    </div>
+   </div>
+  </footer>
+  <script>
+   const form = document.getElementById('downloadForm');
+    const urlInput = document.getElementById('spotifyUrl');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const trackInfo = document.getElementById('trackInfo');
+    const errorMessage = document.getElementById('errorMessage');
+    const albumArt = document.getElementById('albumArt');
+    const trackTitle = document.getElementById('trackTitle');
+    const trackArtist = document.getElementById('trackArtist');
+    const trackAlbum = document.getElementById('trackAlbum');
+    const trackDuration = document.getElementById('trackDuration');
+    const spotifyLink = document.getElementById('spotifyLink');
+    const downloadMp3Btn = document.getElementById('downloadMp3Btn');
+    const donateBtn = document.getElementById('donateBtn');
+    const donationModal = document.getElementById('donationModal');
+    const closeModal = document.getElementById('closeModal');
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+    let currentTrackData = null;
 
-        // Data sudut papan
-        const corners = [
-            { id: 0, name: "Mulai", type: "start" },
-            { id: 10, name: "Penjara", type: "jail" },
-            { id: 20, name: "Parkir Gratis", type: "free-parking" },
-            { id: 30, name: "Pergi ke Penjara", type: "go-to-jail" }
-        ];
+    donateBtn.addEventListener('click', () => {
+      donationModal.classList.remove('hidden');
+      donationModal.classList.add('flex');
+    });
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+    closeModal.addEventListener('click', () => {
+      donationModal.classList.add('hidden');
+      donationModal.classList.remove('flex');
+    });
 
-        // Data kartu kesempatan
-        const chanceCards = [
-            { text: "Anda memenangkan kontes kecantikan. Dapatkan $50", action: "add-money", amount: 50 },
-            { text: "Biaya sekolah. Bayar $100", action: "subtract-money", amount: 100 },
-            { text: "Anda mewarisi $100", action: "add-money", amount: 100 },
-            { text: "Pajak penghasilan. Bayar $75", action: "subtract-money", amount: 75 },
-            { text: "Kembali ke Start", action: "move-to", position: 0 },
-            { text: "Pergi ke Penjara. Jangan lewatkan Start", action: "move-to", position: 10 }
-        ];
+    donationModal.addEventListener('click', (e) => {
+      if (e.target === donationModal) {
+        donationModal.classList.add('hidden');
+        donationModal.classList.remove('flex');
+      }
+    });
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.remove('hidden');
+      trackInfo.classList.add('hidden');
+    }
 
-        // Data pemain
-        const players = [];
-        let currentPlayerIndex = 0;
-        let gameStarted = false;
-        let gameMode = "local";
-        let diceRolled = false;
-        let currentProperty = null;
+    function hideError() {
+      errorMessage.classList.add('hidden');
+    }
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+    function setButtonState(state, text, iconHtml = '') {
+      if(state === 'loading') {
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = `<svg class="animate-spin h-6 w-6 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg> ${text}`;
+        downloadBtn.classList.remove('bg-gradient-to-r', 'from-indigo-600', 'via-purple-600', 'to-pink-600');
+        downloadBtn.classList.add('bg-gray-600', 'cursor-wait');
+      } else if(state === 'success') {
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = `${iconHtml} ${text}`;
+        downloadBtn.classList.remove('bg-gray-600', 'cursor-wait');
+        downloadBtn.classList.add('bg-gradient-to-r', 'from-indigo-600', 'via-purple-600', 'to-pink-600');
+      } else if(state === 'error') {
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = `${iconHtml} ${text}`;
+        downloadBtn.classList.remove('bg-gray-600', 'cursor-wait');
+        downloadBtn.classList.add('bg-gradient-to-r', 'from-red-600', 'to-red-500');
+      } else {
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = `<i class="fas fa-rocket"></i> Dapatkan Info Lagu`;
+        downloadBtn.classList.remove('bg-gray-600', 'cursor-wait', 'bg-gradient-to-r', 'from-red-600', 'to-red-500');
+        downloadBtn.classList.add('bg-gradient-to-r', 'from-indigo-600', 'via-purple-600', 'to-pink-600');
+      }
+    }
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+    async function fetchTrackInfo(spotifyUrl) {
+      const apiUrl = `https://api.agatz.xyz/api/spotifydl?url=${encodeURIComponent(spotifyUrl)}`;
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Gagal mengambil informasi lagu');
+      }
+      const data = await response.json();
+      if (data.status !== 200) {
+        throw new Error('API mengembalikan status error');
+      }
+      return JSON.parse(data.data);
+    }
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+    function displayTrackInfo(trackData) {
+      currentTrackData = trackData;
 
-        // Elemen DOM
-        const boardElement = document.getElementById('board');
-        const moneyDisplay = document.getElementById('money-display');
-        const dice1Element = document.getElementById('dice1');
-        const dice2Element = document.getElementById('dice2');
-        const rollDiceButton = document.getElementById('roll-dice');
-        const endTurnButton = document.getElementById('end-turn');
-        const playerInfoElement = document.getElementById('player-info');
-        const chatMessagesElement = document.getElementById('chat-messages');
-        const chatInputElement = document.getElementById('chat-input');
-        const propertyModal = document.getElementById('property-modal');
-        const propertyNameElement = document.getElementById('property-name');
-        const propertyImageElement = document.getElementById('property-image');
-        const propertyColorElement = document.getElementById('property-color');
-        const propertyPriceElement = document.getElementById('property-price');
-        const propertyRentElement = document.getElementById('property-rent');
-        const propertyOwnerElement = document.getElementById('property-owner');
-        const buyPropertyButton = document.getElementById('buy-property');
-        const payRentButton = document.getElementById('pay-rent');
-        const closeModalButton = document.getElementById('close-modal');
-        const gameSetupModal = document.getElementById('game-setup');
-        const playerCountSelect = document.getElementById('player-count');
-        const gameModeSelect = document.getElementById('game-mode');
-        const playerNamesElement = document.getElementById('player-names');
-        const startGameButton = document.getElementById('start-game');
+      if (trackData.gambar_kecil && trackData.gambar_kecil.length > 0) {
+        albumArt.src = trackData.gambar_kecil[0].url;
+        albumArt.alt = `Gambar album untuk ${trackData.judul}`;
+      } else {
+        albumArt.src = "https://placehold.co/120x120/png?text=No+Image&font=Orbitron&fontSize=14";
+        albumArt.alt = "Gambar placeholder untuk album dengan teks 'No Image'";
+      }
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+      trackTitle.textContent = trackData.judul || "Lagu Tidak Dikenal";
+      trackArtist.textContent = trackData.nama_channel || "Artis Tidak Dikenal";
+      trackAlbum.textContent = "";
+      if (trackData.durasi) {
+        let seconds = trackData.durasi;
+        let mins = Math.floor(seconds / 60);
+        let secs = seconds % 60;
+        trackDuration.textContent = `Durasi: ${mins}:${secs.toString().padStart(2, '0')}`;
+      } else {
+        trackDuration.textContent = "Durasi: Tidak Diketahui";
+      }
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+      spotifyLink.href = urlInput.value || "#";
 
-        // Warna pemain
-        const playerColors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00'];
+      if (trackData.url_audio_v1) {
+        downloadMp3Btn.disabled = false;
+      } else {
+        downloadMp3Btn.disabled = true;
+      }
 
-        // Inisialisasi papan
-        function initializeBoard() {
-            // Kosongkan papan
-            boardElement.innerHTML = '';
-            
-            // Tambahkan display uang
-            boardElement.appendChild(moneyDisplay);
-            
-            // Buat properti di sekitar papan
-            const boardSize = boardElement.offsetWidth;
-            const propertySize = boardSize / 10;
-            
-            // Sisi atas
-            for (let i = 1; i < 10; i++) {
-                createProperty(i, i * propertySize, 0, propertySize, propertySize);
-            }
-            
-            // Sisi kanan
-            for (let i = 11; i < 20; i++) {
-                createProperty(i, boardSize - propertySize, (i - 10) * propertySize, propertySize, propertySize);
-            }
-            
-            // Sisi bawah
-            for (let i = 21; i < 30; i++) {
-                createProperty(i, boardSize - ((i - 20) * propertySize), boardSize - propertySize, propertySize, propertySize);
-            }
-            
-            // Sisi kiri
-            for (let i = 31; i < 40; i++) {
-                createProperty(i, 0, boardSize - ((i - 30) * propertySize), propertySize, propertySize);
-            }
-            
-            // Tambahkan sudut papan
-            createCorner(0, 0, 0, propertySize, propertySize); // Mulai
-            createCorner(10, boardSize - propertySize, 0, propertySize, propertySize); // Penjara
-            createCorner(20, boardSize - propertySize, boardSize - propertySize, propertySize, propertySize); // Parkir Gratis
-            createCorner(30, 0, boardSize - propertySize, propertySize, propertySize); // Pergi ke Penjara
-        }
-
-        // Buat properti di papan
-        function createProperty(id, left, top, width, height) {
-            const property = document.createElement('div');
-            property.className = 'property';
-            property.style.left = `${left}px`;
-            property.style.top = `${top}px`;
-            property.style.width = `${width}px`;
-            property.style.height = `${height}px`;
-            
-            // Temukan data properti
-            const propertyData = properties.find(p => p.id === id % 40);
-            
-            if (propertyData) {
-                property.innerHTML = `<strong>${propertyData.name}</strong><br>$${propertyData.price}`;
-                property.style.backgroundColor = `${propertyData.color}20`;
-                property.style.borderColor = propertyData.color;
-                
-                // Tambahkan event listener untuk menampilkan detail properti
-                property.addEventListener('click', () => {
-                    showPropertyDetails(propertyData);
-                });
-            } else {
-                // Jika bukan properti, mungkin kartu kesempatan atau lainnya
-                if (id % 5 === 0) {
-                    property.innerHTML = 'Kesempatan';
-                    property.style.backgroundColor = '#FFD70020';
-                    property.style.borderColor = '#FFD700';
-                } else if (id % 10 === 0 && id % 20 !== 0) {
-                    property.innerHTML = 'Pajak<br>Luxury<br>Bayar $75';
-                    property.style.backgroundColor = '#FF634720';
-                    property.style.borderColor = '#FF6347';
-                }
-            }
-            
-            boardElement.appendChild(property);
-        }
-
-        // Buat sudut papan
-        function createCorner(id, left, top, width, height) {
-            const corner = document.createElement('div');
-            corner.className = 'property';
-            corner.style.left = `${left}px`;
-            corner.style.top = `${top}px`;
-            corner.style.width = `${width}px`;
-            corner.style.height = `${height}px`;
-            
-            const cornerData = corners.find(c => c.id === id);
-            if (cornerData) {
-                corner.innerHTML = `<strong>${cornerData.name}</strong>`;
-                corner.style.backgroundColor = '#FFFFFF';
-                corner.style.borderColor = '#000000';
-            }
-            
-            boardElement.appendChild(corner);
-        }
-
-        // Tampilkan detail properti
-        function showPropertyDetails(property) {
-            currentProperty = property;
-            propertyNameElement.textContent = property.name;
-            propertyImageElement.src = property.image;
-            propertyColorElement.style.backgroundColor = property.color;
-            propertyPriceElement.textContent = `Harga: $${property.price}`;
-            propertyRentElement.textContent = `Sewa: $${property.rent}`;
-            
-            // Cari pemilik properti
-            const owner = players.find(player => 
-                player.properties.some(p => p.id === property.id)
-            );
-            
-            if (owner) {
-                propertyOwnerElement.textContent = `Pemilik: ${owner.name}`;
-                propertyOwnerElement.style.color = owner.color;
-                
-                // Tampilkan tombol yang sesuai
-                if (owner.id === players[currentPlayerIndex].id) {
-                    buyPropertyButton.style.display = 'none';
-                    payRentButton.style.display = 'none';
-                } else {
-                    buyPropertyButton.style.display = 'none';
-                    payRentButton.style.display = 'inline-block';
-                }
-            } else {
-                propertyOwnerElement.textContent = 'Pemilik: Tidak ada';
-                propertyOwnerElement.style.color = '#000000';
-                
-                buyPropertyButton.style.display = 'inline-block';
-                payRentButton.style.display = 'none';
-            }
-            
-            propertyModal.style.display = 'flex';
-        }
-
-        // Inisialisasi pemain
-        function initializePlayers(count) {
-            players.length = 0;
-            
-            for (let i = 0; i < count; i++) {
-                players.push({
-                    id: i,
-                    name: `Pemain ${i + 1}`,
-                    color: playerColors[i],
-                    money: 1500,
-                    position: 0,
-                    properties: [],
-                    inJail: false,
-                    jailTurns: 0
-                });
-                
-                // Tambahkan token pemain ke papan
-                addPlayerToken(i);
-            }
-            
-            updatePlayerInfo();
-        }
-
-        // Tambahkan token pemain ke papan
-        function addPlayerToken(playerId) {
-            const player = players[playerId];
-            const token = document.createElement('div');
-            token.className = 'player';
-            token.id = `player-${playerId}`;
-            token.style.backgroundColor = player.color;
-            
-            // Posisikan token pemain
-            updatePlayerPosition(playerId);
-            
-            boardElement.appendChild(token);
-        }
-
-        // Perbarui posisi token pemain
-        function updatePlayerPosition(playerId) {
-            const player = players[playerId];
-            const token = document.getElementById(`player-${playerId}`);
-            
-            if (!token) return;
-            
-            const boardSize = boardElement.offsetWidth;
-            const propertySize = boardSize / 10;
-            
-            let left, top;
-            
-            if (player.position < 10) {
-                // Sisi atas
-                left = player.position * propertySize + (propertySize / 4);
-                top = propertySize / 4;
-            } else if (player.position < 20) {
-                // Sisi kanan
-                left = boardSize - propertySize + (propertySize / 4);
-                top = (player.position - 10) * propertySize + (propertySize / 4);
-            } else if (player.position < 30) {
-                // Sisi bawah
-                left = boardSize - ((player.position - 20) * propertySize) - (propertySize / 4);
-                top = boardSize - propertySize + (propertySize / 4);
-            } else {
-                // Sisi kiri
-                left = propertySize / 4;
-                top = boardSize - ((player.position - 30) * propertySize) - (propertySize / 4);
-            }
-            
-            // Sesuaikan posisi berdasarkan jumlah pemain
-            const offset = playerId * 10;
-            token.style.left = `${left + offset}px`;
-            token.style.top = `${top + offset}px`;
-        }
-
-        // Perbarui info pemain di sidebar
-        function updatePlayerInfo() {
-            playerInfoElement.innerHTML = '';
-            
-            players.forEach((player, index) => {
-                const playerCard = document.createElement('div');
-                playerCard.className = 'player-card';
-                playerCard.style.borderLeft = `5px solid ${player.color}`;
-                
-                let propertiesList = 'Tidak ada properti';
-                if (player.properties.length > 0) {
-                    propertiesList = player.properties.map(p => p.name).join(', ');
-                }
-                
-                playerCard.innerHTML = `
-                    <h3 style="color: ${player.color}">${player.name} ${index === currentPlayerIndex ? '(Giliran Anda)' : ''}</h3>
-                    <p>Uang: $${player.money}</p>
-                    <p>Properti: ${propertiesList}</p>
-                `;
-                
-                playerInfoElement.appendChild(playerCard);
-            });
-            
-            // Perbarui tampilan uang pemain saat ini
-            moneyDisplay.textContent = `Uang: $${players[currentPlayerIndex].money}`;
-        }
-
-        // Lempar dadu
-        function rollDice() {
-            if (!diceRolled) {
-                const dice1 = Math.floor(Math.random() * 6) + 1;
-                const dice2 = Math.floor(Math.random() * 6) + 1;
-                
-                dice1Element.textContent = dice1;
-                dice2Element.textContent = dice2;
-                
-                diceRolled = true;
-                rollDiceButton.disabled = true;
-                endTurnButton.disabled = false;
-                
-                movePlayer(currentPlayerIndex, dice1 + dice2);
-                
-                // Jika bermain melawan AI, biarkan AI bermain setelah jeda
-                if (gameMode === 'ai' && currentPlayerIndex !== 0) {
-                    setTimeout(aiTurn, 1500);
-                }
-                
-                return dice1 + dice2;
-            }
-            return 0;
-        }
-
-        // Pindahkan pemain
-        function movePlayer(playerId, steps) {
-            const player = players[playerId];
-            player.position = (player.position + steps) % 40;
-            
-            updatePlayerPosition(playerId);
-            
-            // Periksa apakah melewati start
-            if (player.position < steps) {
-                player.money += 200;
-                addToChat(`${player.name} melewati Start dan mendapatkan $200`);
-                updatePlayerInfo();
-            }
-            
-            // Periksa posisi baru
-            checkPosition(playerId);
-        }
-
-        // Periksa posisi pemain
-        function checkPosition(playerId) {
-            const player = players[playerId];
-            const currentPos = player.position;
-            
-            // Periksa sudut papan
-            const corner = corners.find(c => c.id === currentPos);
-            if (corner) {
-                switch (corner.type) {
-                    case 'start':
-                        // Sudah ditangani saat melewati start
-                        break;
-                    case 'jail':
-                        // Hanya mengunjungi penjara
-                        addToChat(`${player.name} mengunjungi penjara`);
-                        break;
-                    case 'free-parking':
-                        addToChat(`${player.name} parkir gratis`);
-                        break;
-                    case 'go-to-jail':
-                        player.position = 10;
-                        player.inJail = true;
-                        updatePlayerPosition(playerId);
-                        addToChat(`${player.name} pergi ke penjara!`);
-                        break;
-                }
-                return;
-            }
-            
-            // Periksa properti
-            const property = properties.find(p => p.id === currentPos);
-            if (property) {
-                showPropertyDetails(property);
-                return;
-            }
-            
-            // Periksa kartu kesempatan
-            if (currentPos % 5 === 0 && currentPos % 10 !== 0) {
-                drawChanceCard(playerId);
-                return;
-            }
-            
-            // Periksa pajak
-            if (currentPos % 10 === 0 && currentPos % 20 !== 0) {
-                player.money -= 75;
-                addToChat(`${player.name} membayar pajak luxury $75`);
-                updatePlayerInfo();
-                return;
-            }
-        }
-
-        // Ambil kartu kesempatan
-        function drawChanceCard(playerId) {
-            const player = players[playerId];
-            const card = chanceCards[Math.floor(Math.random() * chanceCards.length)];
-            
-            addToChat(`${player.name} mengambil kartu kesempatan: ${card.text}`);
-            
-            switch (card.action) {
-                case 'add-money':
-                    player.money += card.amount;
-                    break;
-                case 'subtract-money':
-                    player.money -= card.amount;
-                    break;
-                case 'move-to':
-                    player.position = card.position;
-                    updatePlayerPosition(playerId);
-                    checkPosition(playerId); // Periksa posisi baru
-                    break;
-            }
-            
-            updatePlayerInfo();
-        }
-
-        // Beli properti
-        function buyProperty() {
-            const player = players[currentPlayerIndex];
-            
-            if (player.money >= currentProperty.price) {
-                player.money -= currentProperty.price;
-                player.properties.push(currentProperty);
-                
-                addToChat(`${player.name} membeli ${currentProperty.name} seharga $${currentProperty.price}`);
-                
-                updatePlayerInfo();
-                closeModal();
-            } else {
-                alert('Uang tidak cukup!');
-            }
-        }
-
-        // Bayar sewa
-        function payRent() {
-            const currentPlayer = players[currentPlayerIndex];
-            const owner = players.find(player => 
-                player.properties.some(p => p.id === currentProperty.id)
-            );
-            
-            if (owner && currentPlayer.money >= currentProperty.rent) {
-                currentPlayer.money -= currentProperty.rent;
-                owner.money += currentProperty.rent;
-                
-                addToChat(`${currentPlayer.name} membayar sewa $${currentProperty.rent} untuk ${currentProperty.name} ke ${owner.name}`);
-                
-                updatePlayerInfo();
-                closeModal();
-            } else if (owner) {
-                alert('Uang tidak cukup untuk membayar sewa!');
-            }
-        }
-
-        // Akhiri giliran
-        function endTurn() {
-            diceRolled = false;
-            rollDiceButton.disabled = false;
-            endTurnButton.disabled = true;
-            
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-            updatePlayerInfo();
-            
-            // Jika mode AI dan giliran AI, biarkan AI bermain
-            if (gameMode === 'ai' && currentPlayerIndex !== 0) {
-                setTimeout(aiTurn, 1000);
-            }
-        }
-
-        // AI bermain
-        function aiTurn() {
-            if (!gameStarted || gameMode !== 'ai' || currentPlayerIndex === 0) return;
-            
-            const player = players[currentPlayerIndex];
-            
-            // Lempar dadu
-            const total = rollDice();
-            addToChat(`${player.name} melempar dadu dan mendapatkan ${total}`);
-            
-            // AI akan membeli properti jika memiliki cukup uang
-            if (currentProperty && !currentProperty.owner && player.money >= currentProperty.price) {
-                setTimeout(() => {
-                    buyProperty();
-                    setTimeout(endTurn, 1000);
-                }, 1500);
-            } else {
-                setTimeout(endTurn, 1500);
-            }
-        }
-
-        // Tambahkan pesan ke chat
-        function addToChat(message) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            chatMessagesElement.appendChild(messageElement);
-            chatMessagesElement.scrollTop = chatMessagesElement.scrollHeight;
-        }
-
-        // Tutup modal
-        function closeModal() {
-            propertyModal.style.display = 'none';
-        }
-
-        // Setup pemain
-        function setupPlayerNames() {
-            playerNamesElement.innerHTML = '';
-            const count = parseInt(playerCountSelect.value);
-            
-            for (let i = 0; i < count; i++) {
-                const div = document.createElement('div');
-                div.innerHTML = `
-                    <label for="player-${i}-name">Nama Pemain ${i + 1}:</label>
-                    <input type="text" id="player-${i}-name" value="Pemain ${i + 1}">
-                `;
-                playerNamesElement.appendChild(div);
-            }
-        }
-
-        // Mulai permainan
-        function startGame() {
-            const count = parseInt(playerCountSelect.value);
-            gameMode = gameModeSelect.value;
-            
-            // Set nama pemain
-            for (let i = 0; i < count; i++) {
-                const nameInput = document.getElementById(`player-${i}-name`);
-                if (nameInput) {
-                    players[i].name = nameInput.value || `Pemain ${i + 1}`;
-                }
-            }
-            
-            gameSetupModal.style.display = 'none';
-            gameStarted = true;
-            
-            // Jika mode AI, set pemain pertama sebagai manusia, lainnya AI
-            if (gameMode === 'ai') {
-                for (let i = 1; i < count; i++) {
-                    players[i].name = `Robot ${i}`;
-                }
-            }
-            
-            updatePlayerInfo();
-        }
-
-        // Event listeners
-        rollDiceButton.addEventListener('click', rollDice);
-        endTurnButton.addEventListener('click', endTurn);
-        buyPropertyButton.addEventListener('click', buyProperty);
-        payRentButton.addEventListener('click', payRent);
-        closeModalButton.addEventListener('click', closeModal);
-        document.querySelector('.close').addEventListener('click', closeModal);
-        startGameButton.addEventListener('click', startGame);
-        playerCountSelect.addEventListener('change', setupPlayerNames);
-        gameModeSelect.addEventListener('change', function() {
-            if (this.value === 'ai') {
-                playerCountSelect.value = '2';
-                setupPlayerNames();
-            }
-        });
-
-        chatInputElement.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && this.value.trim() !== '') {
-                addToChat(`${players[0].name}: ${this.value}`);
-                this.value = '';
-            }
-        });
-
-        // Inisialisasi
-        window.addEventListener('load', function() {
-            initializeBoard();
-            setupPlayerNames();
-            initializePlayers(2); // Default 2 pemain
-        });
-    </script>
-</body>
+      trackInfo.classList.remove('hidden');
+      hideError();
+    }
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = urlInput.value.trim();
+      if (!url) {
+        showError("Silakan masukkan URL lagu Spotify.");
+        return;
+      }
+      setButtonState('loading', 'Memuat...');
+      trackInfo.classList.add('hidden');
+      hideError();
+      try {
+        const trackData = await fetchTrackInfo(url);
+        displayTrackInfo(trackData);
+        setButtonState('success', 'Lagu Dimuat', '<i class="fas fa-check"></i>');
+      } catch (error) {
+        showError(error.message || "Gagal memuat info lagu.");
+        setButtonState('error', 'Coba Lagi', '<i class="fas fa-exclamation-triangle"></i>');
+      }
+      setTimeout(() => {
+        setButtonState('', 'Dapatkan Info Lagu', '<i class="fas fa-rocket"></i>');
+      }, 3000);
+    });
+//chanell:https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R//
+    downloadMp3Btn.addEventListener('click', () => {
+      if (!currentTrackData || !currentTrackData.url_audio_v1) {
+        alert("Tautan unduh MP3 tidak tersedia.");
+        return;
+      }
+      window.open(currentTrackData.url_audio_v1, '_blank', 'noopener');
+    });
+  </script>
+ </body>
 </html>
